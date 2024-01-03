@@ -66,13 +66,16 @@ function calculateResult() {
 }
 
 //Shunting Yard algorithm to convert the infix expression (standard mathematical notation) into postfix notation, and then evaluates the postfix expression.
-function customEval(expression) { 
+
+function customEval(expression) {
     const operatorsPriority = {
         '+': 1,
         '-': 1,
         '*': 2,
         '/': 2,
-        '%': 2
+        '%': 2,
+        '(': 0,  // Set lower priority for '('
+        ')': 3
     };
 
     const applyOperation = (operands, operator) => {
@@ -97,21 +100,30 @@ function customEval(expression) {
         }
     };
 
-    const tokens = expression.split(/([\+\-\*\/\%])/g).filter(token => token.trim() !== ''); 
+    const tokens = expression.split(/([\+\-\*\/\%\(\)])/g).filter(token => token.trim() !== ''); 
     console.log(tokens);
     const operands = [];
     const operators = [];
 
     tokens.forEach(token => {
-        if (operatorsPriority[token]) {
+        if (operatorsPriority[token] !== undefined) {
             console.log(operands)
-            while (
-                operators.length > 0 &&
-                operatorsPriority[operators[operators.length - 1]] >= operatorsPriority[token]
-            ) {
-                operands.push(applyOperation(operands, operators.pop()));
+            if (token === '(') {
+                operators.push(token);
+            } else if (token === ')') {
+                while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+                    operands.push(applyOperation(operands, operators.pop()));
+                }
+                operators.pop(); // Pop '('
+            } else {
+                while (
+                    operators.length > 0 &&
+                    operatorsPriority[operators[operators.length - 1]] >= operatorsPriority[token]
+                ) {
+                    operands.push(applyOperation(operands, operators.pop()));
+                }
+                operators.push(token);
             }
-            operators.push(token);
         } else {
             operands.push(parseFloat(token));
         }
@@ -124,8 +136,7 @@ function customEval(expression) {
     if (operands.length === 1) {
         console.log(operands)
         return operands[0];
-    } 
-   
+    }
 }
 
 /* KEYBOARD */ 
@@ -136,7 +147,7 @@ function handleKeyPress(event) {
     const key = event.key;
     
     // Check if the pressed key is a number or operator
-    if (!isNaN(key) || ['+', '-', '*', '/', '%', '.'].includes(key)) {
+    if (!isNaN(key) || ['+', '-', '*', '/', '%', '.', '(', ')'].includes(key)) { 
         handleKeyInput(key);
     } else {
         // Check for special keys
@@ -160,10 +171,25 @@ function handleKeyInput(key) {
         getNumber(key);
     } else {
         // Check if the key is an operator
-        if (['+', '-', '*', '/', '%'].includes(key)) {
+        if (['+', '-', '*', '/', '%', '(', ')'].includes(key)) {
+            if (key === '(') {
+                // Handle '(' as a separate case
+                getOperator(key);
+            } else if (key === ')') {
+                // Handle ')' as a separate case
+                // Check if there are matching '(' in the expression before allowing ')'
+                const openParenthesesCount = currentExpression.split('(').length - 1;
+                const closeParenthesesCount = currentExpression.split(')').length - 1;
+
+                if (openParenthesesCount > closeParenthesesCount) {
+                    getNumber(key);
+                }
+            } 
+            else {
             getOperator(key);
+            }
         }
-    }
+    }  
 }
 
 
@@ -174,4 +200,3 @@ function updateDisplay() {
 function saveHistoryToLocalStorage() {
     localStorage.setItem('calculatorHistory', JSON.stringify(calculationHistory));
 }
-
