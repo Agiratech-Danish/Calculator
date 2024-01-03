@@ -128,6 +128,44 @@ function customEval(expression) {
    
 }
 
+/* KEYBOARD */ 
+
+document.addEventListener('keydown', handleKeyPress);
+
+function handleKeyPress(event) {
+    const key = event.key;
+    
+    // Check if the pressed key is a number or operator
+    if (!isNaN(key) || ['+', '-', '*', '/', '%', '.'].includes(key)) {
+        handleKeyInput(key);
+    } else {
+        // Check for special keys
+        switch (key) {
+            case 'Enter':
+                calculateResult();
+                break;
+            case 'Escape':
+                clearDisplay();
+                break;
+            case 'Backspace':
+                deleteLastDigit();
+                break;
+        }
+    }
+}
+
+function handleKeyInput(key) {
+    // Check if the key is a number
+    if (!isNaN(key) || key === '.') {
+        getNumber(key);
+    } else {
+        // Check if the key is an operator
+        if (['+', '-', '*', '/', '%'].includes(key)) {
+            getOperator(key);
+        }
+    }
+}
+
 
 function updateDisplay() {
     document.getElementById('inputbox').value = currentExpression + currentInput;
