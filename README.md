@@ -2,7 +2,7 @@
 
 A simple calculator web application with basic arithmetic operations.
 
-![Calculator]()
+![Calculator](Calculator.png)
 
 ## Features
 
