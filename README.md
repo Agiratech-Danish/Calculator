@@ -17,7 +17,13 @@ A simple calculator web application with basic arithmetic operations.
 
    ```bash
    git clone https://github.com/your-username/calculator.git
-MIT License
+
+ 2. Hosted Link
+    https://dan-agiratech.github.io/Calculator/
+
+
+    
+
 
 Copyright (c) [2024] [Danish Afroz]
 
