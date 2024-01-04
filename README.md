@@ -21,7 +21,7 @@ A simple calculator web application with basic arithmetic operations.
  2. Hosted Link
     https://dan-agiratech.github.io/Calculator/
 
-3. Buid-with
+## Buid-with
     Html
     Css
     Javascript
